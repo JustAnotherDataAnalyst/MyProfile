@@ -36,17 +36,6 @@ Write a SQL query to find employees who earn the top three salaries in each of t
 
 Solution –
 
-/* Write your T-SQL query statement below */
-select t.Department,t.Employee,t.Salary from 
-(select d.name as Department,e.name as Employee, Salary --subquery created since the ranking cannot be filtered in the same scope the field/formula was defined in 
- ,rank() over(partition by e.departmentid order by salary desc) as mx_sal --data has been partitioned by department since requirement is highest salary by department
-from employee e
-inner join department d
-on e.departmentid=d.id)t --joining the two tables on department information present in employee and department table
-where t.mx_sal=1 --Filter out highest salary 
-order by t.Department asc --Can be avoided, but added to fit the description exactly as mentioned in the sample output 
-
-
 select Department,Employee,Salary from 
 (select d.name as Department,e.name as Employee,e.salary as Salary , --subquery created since the ranking cannot be filtered in the same scope the field/formula was defined in 
     dense_rank() over (partition by e.departmentid order by salary desc) as rnk --data has been partitioned by department since requirement is highest 3 salary by department
